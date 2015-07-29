@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<script type="text/template" id="option_template">
+    <option value="<%= id %>"><%= name %></option>
+</script>
+<script type="text/javascript">
+$(function(){
+
+    CourseTypeModel = Backbone.Model.extend({
+        urlRoot: '/api/v1/course_type/'
+    });
+
+    CourseTypeCollection = Backbone.Collection.extend({
+        model: CourseTypeModel,
+        url: '/api/v1/course_type/'
+    });
+
+    CourseTypeView = Backbone.View.extend({
+        el: "#course_type",
+        initialize: function() {
+            _.bindAll(this, 'render');
+            this.collection = new CourseTypeCollection();
+            var that = this;
+            this.collection.fetch({
+                success: function(course_types){
+                    that.render(course_types.toJSON())
+                }
+            });
+        },
+        template: _.template('<option value="<%= id %>"><%= name %></option>'),
+        render: function(course_types){
+            var that = this;
+            course_types.forEach(function(course_type){
+                that.$el.append(that.template(course_type));
+            });
+        }
+    });
+
+    CourseModel = Backbone.Model.extend({
+        urlRoot: '/api/v1/private_course/',
+        defaults: {
+            'course_type': '',
+            'course_desciption': '',
+            'course_name': '',
+            'price': ''
+        }
+    });
+
+    CourseView = Backbone.View.extend({
+        el: '#courseForm',
+        events: {
+            'click #create': 'submitCreate'
+        },
+        initialize: function() {
+            _.bindAll(this, 'submitCreate');
+            this.model = new CourseModel();
+        },
+        submitCreate: function() {
+            var unindexed_array = this.$el.serializeArray();
+            var data = {};
+            alert(JSON.stringify(unindexed_array))
+            unindexed_array.forEach(function(n){
+                data[n.name] = n.value;
+            });             
+            this.model.set(data);
+            this.model.save();
+        },
+    });
+
+    return new CourseTypeView(), new CourseView();
+})
+</script>
+<h5>Vaaavaaa</h5>
+<form id="courseForm">
+    {% csrf_token %}
+    <label>course type: </label>
+    <select name="course_type" id="course_type">
+        
+    </select><br/>
+    <label>course desciption: </label>
+    <input name="course_desciption" type="text" id="course_desciption" value=""><br/>
+    <label>course name: </label>
+    <input name="course_name" type="text" id="course_name" value=""><br/>
+    <label>course price: </label>
+    <input name="price" type="text" id="price" value=""><br/>
+    <input type="submit" id="create" value="Go">
+</form>
+{% endblock %}

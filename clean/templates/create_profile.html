@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+$(function(){
+
+
+    ProfileModel = Backbone.Model.extend({
+        urlRoot: '/api/v1/profile/',
+        defaults: {
+            'username' : '',
+            'password' : '',
+            'email' : '',
+            'country' : '',
+            'city' : '',
+            'zip_code' : '',
+            'user_desciption' : ''
+        }
+    });
+
+    ProfileView = Backbone.View.extend({
+        el: '#profileForm',
+        events: {
+            'click #create': 'submitCreate'
+        },
+        initialize: function() {
+            _.bindAll(this, 'submitCreate');
+            this.model = new ProfileModel();
+        },
+        submitCreate: function() {
+            var form = this.$el;
+            var self = this;
+            var unindexed_array = form.serializeArray();
+            var data = {};
+
+            unindexed_array.forEach(function(n){
+                data[n.name] = n.value;
+            });             
+            self.model.set(data);
+            self.model.save();
+        },
+    });
+
+    return new ProfileView()
+})
+</script>
+<h5>Vaaavaaa</h5>
+<form id="profileForm">
+    {% csrf_token %}
+    <label>username: </label>
+    <input name="username" type="text" id="username" value=""><br/>
+    <label>password: </label>
+    <input name="password" type="password" id="password" value=""><br/>
+    <label>email: </label>
+    <input name="email" type="text" id="email" value=""><br/>
+    <label>country: </label>
+    <input name="country" type="text" id="country" value=""><br/>
+    <label>city: </label>
+    <input name="city" type="text" id="city" value=""><br/>
+    <label>zip code: </label>
+    <input name="zip_code" type="text" id="zip_code" value=""><br/>
+    <label>about your self: </label>
+    <input name="user_desciption" type="text" id="user_desciption" value=""><br/>
+    <input type="submit" id="create" value="Go">
+</form>
+{% endblock %}

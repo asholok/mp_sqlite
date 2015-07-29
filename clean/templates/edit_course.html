@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<script type="text/template" id="templateForm">
+    {% csrf_token %}
+    <label>Course type: </label>
+    <input readonly name="course_type" type="text" id="course_type" value="<%= course_type.name %>"><br/>
+    <label>Course name: </label>
+    <input name="course_name" type="text" id="course_name" value="<%= course_name %>"><br/>
+    <label>Course desciption: </label>
+    <input name="course_desciption" type="text" id="course_desciption" value="<%= course_desciption %>"><br/>
+    <label>price: </label>
+    <input name="price" type="text" id="price" value="<%= price %>"><br/>
+    <input type="button" id="update" value="Change">
+</script>
+<script type="text/javascript">
+$(function(){
+    
+    CourseModel = Backbone.Model.extend({
+        urlRoot: '/api/v1/private_course/',
+        defaults: {
+            'course_desciption': '',
+            'course_name': '',
+            'price': ''
+        }
+    });
+
+    CourseView = Backbone.View.extend({
+        el: '#profileForm',
+        events: {
+            'click #update': 'submitUpdate'
+        },
+        initialize: function(){
+            _.bindAll(this, 'render', 'submitUpdate');
+            this.model = new CourseModel({resource_uri: '{{resource}}'});
+            var that = this;
+            this.model.fetch( {
+                success: function(course){
+                    that.render( course.toJSON() )
+                }
+            });
+        },
+        submitUpdate: function() {
+            var form = this.$el;
+            var unindexed_array = form.serializeArray();
+            var data = {};
+
+            unindexed_array.forEach(function(n){
+                if ( n.name != 'course_type') {
+                    data[n.name] = n.value;
+                };
+            });             
+            alert(JSON.stringify(data));
+            this.model.set( data );
+            this.model.save();
+        },
+        render: function(course) {
+            alert( JSON.stringify(course) );
+            var template = _.template( $("#templateForm").html() );
+            this.$el.html( template(course) );
+        },
+    });
+
+    return new CourseView();
+})
+</script>
+<h5>Vaaavaaa</h5>
+<form id="profileForm"></form>
+
+
+{% endblock %}

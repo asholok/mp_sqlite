@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+$(function(){
+    RegistryUserModel = Backbone.Model.extend({
+        
+        initialize: function() {
+        },
+
+        urlRoot: function() {
+            return '/api/v1/private_profile/'; 
+        },
+
+    });
+
+    ProfileModel = Backbone.Model.extend({
+        
+        initialize: function() {
+        },
+
+        urlRoot: function() {
+            return '/api/v1/profile';
+        },
+
+    });
+
+    Profiles = Backbone.Collection.extend({
+        
+        model: ProfileModel,
+
+        url : '/api/v1/profile/',
+    });
+
+    var profile = new RegistryUserModel({id: {{request.user.id}}});
+
+    profile.fetch({
+        success: function(profile) {
+            var u = profile.toJSON();
+            alert(JSON.stringify(u));
+        }
+    });
+    // alert(profile.toJSON());
+
+    // CollectionProfiles = new Profiles;
+
+
+
+    ProfileView = Backbone.View.extend({
+        
+        el: '#booka',
+        tagName: 'div',
+
+        initialize: function() {
+            _.bindAll(this, 'render');
+            this.collection = new Profiles();
+            var that = this;
+            this.collection.fetch({
+                success: function(profiles) {
+                    that.render(profiles.toJSON());
+                }
+            });
+        },
+
+        template: _.template("<div> country: <%= country %>, ionfo: <%= user_desciption %>, city: <%= city  %> </div>"),
+
+        render: function(profiles) {
+            // alert(JSON.stringify(n));
+            var that = this;
+            profiles.forEach(function(profile){
+                that.$el.append(that.template(profile));
+            });
+            // this.$el.html(this.template(n));
+        }
+
+    });
+
+    return new ProfileView()
+
+    // ExampleList = Backbone.View.extend({
+        
+    //     el: '#booka',
+
+    //     initialize: function(options) {
+    //         this.listenTo(CollectionProfiles, 'reset', this.addAll, this);
+    //     },
+
+    //     addOne: function(model) {
+    //         var view = new ListItem ({ model : model });
+    //         console.log(view.render().el);
+    //         this.$el.append(view.render().el);
+    //     },
+
+    //     addAll: function() {
+    //         var sample = this;
+    //         Profiles.each(function(model){
+    //             sample.addOne(model);
+    //         });
+    //     },
+
+    //     render : function() {
+    //         this.$el.html(this.template());
+    //         return this;
+    //     } 
+    // });
+
+    // CollectionProfiles.fetch({ reset : true })
+})
+</script>
+<h5>BooBaa</h5>
+<div id="booka"></div>
+
+{% endblock %}

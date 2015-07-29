@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<script type="text/template" id="templateForm">
+    {% csrf_token %}
+    <label>country: </label>
+    <input name="country" type="text" id="country" value="<%= country %>"><br/>
+    <label>city: </label>
+    <input name="city" type="text" id="city" value="<%= city %>"><br/>
+    <label>zip code: </label>
+    <input name="zip_code" type="text" id="zip_code" value="<%= zip_code %>"><br/>
+    <label>about your self: </label>
+    <input name="user_desciption" type="text" id="user_desciption" value="<%= user_desciption %>"><br/>
+    <input type="button" id="update" value="Change">
+</script>
+<script type="text/javascript">
+$(function(){
+    
+    CourseModel = Backbone.Model.extend({
+        urlRoot: '/api/v1/private_course/',
+        defaults: {
+            'course_type': '',
+            'course_desciption': '',
+            'course_name': '',
+            'price': ''
+        }
+    });
+
+    CourseCollection = Backbone.Collection.extend({
+        model: CourseModel,
+        url: '/api/v1/private_course/',
+    });
+
+    CourseView = Backbone.View.extend({
+        el: '#course_list',
+        initialize: function(){
+            _.bindAll(this, 'render');
+            this.collection = new CourseCollection();
+            var that = this;
+            this.collection.fetch( {
+                success: function(list){
+                    alert(JSON.stringify(list));
+                    that.render(list.toJSON())
+                }
+            });
+        },
+        template: _.template("<a href='{% url 'profile:edit_course' %}?resource=<%= resource_uri %>'><%= course_name %></a></br>"),
+        render: function(list){
+            var that = this;
+            list.forEach(function(course){
+                that.$el.append(that.template(course));
+            });
+        },
+    });
+
+    ProfileModel = Backbone.Model.extend({
+        urlRoot: '/api/v1/private_profile/',
+        defaults: {
+            'country' : '',
+            'city' : '',
+            'zip_code' : '',
+            'user_desciption' : ''
+        }
+    });
+
+    ProfileView = Backbone.View.extend({
+        el: '#profileForm',
+        events: {
+            'click #update': 'submitUpdate'
+        },
+        initialize: function() {
+            _.bindAll(this,'render', 'submitUpdate');
+            this.model = new ProfileModel();
+            var that = this;
+            this.model.fetch({
+                success: function(profile){
+                    that.render(profile.toJSON());
+                }
+            })
+        },        
+        submitUpdate: function() {
+            var form = this.$el;
+            var unindexed_array = form.serializeArray();
+            var data = {};
+
+            alert(JSON.stringify(unindexed_array));
+            unindexed_array.forEach(function(n){
+                data[n.name] = n.value;
+            });             
+            this.model.set( data );
+            this.model.save();
+        },
+        // template _.template($('#templateForm')),
+        render: function(n) {
+            var template = _.template( $("#templateForm").html());
+            this.$el.html( template(n) );
+        },
+    });
+
+
+    return new ProfileView(), new CourseView();
+})
+</script>
+<h5>Vaaavaaa</h5>
+<form id="profileForm"></form>
+
+<div id="course_list"></div>
+
+{% endblock %}

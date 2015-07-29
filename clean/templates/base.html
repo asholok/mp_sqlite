@@ -1,0 +1,32 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/underscore-min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/backbone-min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/backbone-tastypie.js' %}"></script>
+</head>
+<body>
+    {% if request.user.is_active %} 
+        <div> in {{request.user.username}} </div>
+        <div> id {{request.user.id}} </div>
+        <a href="{% url 'profile:logout' %}">Logout</a>
+        <a href="{% url 'profile:create_course' %}">Create course</a>
+        <a href="{% url 'profile:edit_profile' %}">Edit Profile</a>
+    {% else %}
+        <form action="{% url 'profile:login' %}" method="POST">
+            {% csrf_token %}
+            <label>username: </label>
+            <input name="username" type="text" id="username" value="">
+            <label>password: </label>
+            <input name="password" type="password" id="password" value="">
+            <input type="submit" value="Go">
+        </form>
+        <a href="{% url 'profile:create_profile' %}">Registrate</a>
+    {% endif %}
+    {% block content %}{% endblock %}
+</body>
+</html>
