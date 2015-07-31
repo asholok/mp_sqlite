@@ -3,13 +3,15 @@
 
 {% block content %}
 <script type="text/template" id="templateDiv">
-    <div>
-        Subject: <%= course_name %> <br/>
-        Courses: <%= course_type.name %> <br/>
-        City: <%= owner.city %> <br/>
-        Price: <%= price %> <br/>
-        Discribe: <%= course_desciption %> <br/>
-    </div>
+    <% _.forEach(courses, function(course){ %>
+        <div>
+            Subject: <%= course.course_name %> <br/>
+            Courses: <%= course.course_type.name %> <br/>
+            City: <%= course.owner.city %> <br/>
+            Price: <%= course.price %> <br/>
+            Discribe: <%= course.course_desciption %> <br/>
+        </div>
+    <% }); %>
 </script>
 <script type="text/template" id="templateEmptyDiv">
     <div> No results </div>
@@ -87,7 +89,7 @@ $(function(){
 
                     console.log(parsed);
                     alert(typeof parsed);
-                    that.render(parsed.courses);     
+                    that.render(parsed);     
                 },
             });
             // var collection = new SearchCourseModel(data);
@@ -98,12 +100,12 @@ $(function(){
             // });
         },
         render: function(courses){
-            if ( courses.length > 0 ) {
+            if ( courses.courses.length > 0 ) {
                 var template = _.template( $("#templateDiv").html() );
-                courses.forEach(function(course){
-                    alert(JSON.stringify(course));
-                    $('#results').append(template(course));
-                });
+                alert(JSON.stringify(courses));
+                $('#results').html( template(courses) );
+                // courses.forEach(function(course){
+                // });
             } else {
                 var template = _.template( $("#templateEmptyDiv").html() );
                 $('#results').html( template );
