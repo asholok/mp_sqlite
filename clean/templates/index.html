@@ -38,12 +38,10 @@ $(function(){
     profile.fetch({
         success: function(profile) {
             var u = profile.toJSON();
-            alert(JSON.stringify(u));
+            // alert(JSON.stringify(u));
         }
     });
     // alert(profile.toJSON());
-
-    // CollectionProfiles = new Profiles;
 
 
 
@@ -78,34 +76,6 @@ $(function(){
 
     return new ProfileView()
 
-    // ExampleList = Backbone.View.extend({
-        
-    //     el: '#booka',
-
-    //     initialize: function(options) {
-    //         this.listenTo(CollectionProfiles, 'reset', this.addAll, this);
-    //     },
-
-    //     addOne: function(model) {
-    //         var view = new ListItem ({ model : model });
-    //         console.log(view.render().el);
-    //         this.$el.append(view.render().el);
-    //     },
-
-    //     addAll: function() {
-    //         var sample = this;
-    //         Profiles.each(function(model){
-    //             sample.addOne(model);
-    //         });
-    //     },
-
-    //     render : function() {
-    //         this.$el.html(this.template());
-    //         return this;
-    //     } 
-    // });
-
-    // CollectionProfiles.fetch({ reset : true })
 })
 </script>
 <h5>BooBaa</h5>

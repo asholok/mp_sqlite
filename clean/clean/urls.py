@@ -27,10 +27,12 @@ v1_api.register(PublicUserResource())
 v1_api.register(PublicProfileResource())
 v1_api.register(PublicCourseResource())
 v1_api.register(CourseTypeResource())
+v1_api.register(CourseSearchResource())
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(v1_api.urls)),
     url(r'^profile/', include('profiles.urls', namespace='profile')),
+    url(r'^search', TemplateView.as_view(template_name='search.html'), name='search'),
     url(r'^$', TemplateView.as_view(template_name='index.html'), name='home'),
 ]

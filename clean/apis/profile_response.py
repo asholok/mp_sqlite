@@ -5,6 +5,9 @@ from profiles.models import Profile, Course, CourseType
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from tastypie.exceptions import ImmediateHttpResponse
+from django.db.models import Q
+from tastypie.utils import trailing_slash
+from django.conf.urls import url
 
 class LocalProfileAuth(Authorization):
     def read_list(self, object_list, bundle):
@@ -122,10 +125,11 @@ class PublicUserResource(resources.ModelResource):
         excludes = ['email', 'password', 'is_active', 'is_staff', 'is_superuser']
         resource_name = 'user'
         allowed_methods = ['get', 'post']
+        authorization = Authorization()
         filtering = {'id': ('exact',)}
 
 class PublicProfileResource(resources.ModelResource):
-    user = fields.ForeignKey(PublicUserResource, 'user')
+    user = fields.ForeignKey(PublicUserResource, 'user', full=True)
 
     class Meta:
         queryset = Profile.objects.all()
@@ -164,19 +168,89 @@ class PublicProfileResource(resources.ModelResource):
              
 
 class PublicCourseResource(resources.ModelResource):
-    owner = fields.ForeignKey(PublicProfileResource, 'profile')
+    owner = fields.ForeignKey(PublicProfileResource, 'owner', full=True)
+    course_type = fields.ForeignKey(CourseTypeResource, 'course_type', full=True)
 
     class Meta:
         queryset = Course.objects.all()
         resource_name = 'course'
-        fields = ['course_name', 'course_type', 'course_desciption', 'owner']
-        allowed_methods = ['get', 'post']
+        fields = ['course_name', 'course_type', 'course_desciption', 'owner', 'price']
+        allowed_methods = ['get']
         always_return_data = True
+        authorization = Authorization()
         filtering = {'owner': resources.ALL_WITH_RELATIONS}
 
 
 
 """ ***************** End Public *********************************************** """
 
+""" ***************** Search ************************************************** """
 
 
+class CourseSearchResource(resources.ModelResource):
+    owner = fields.ForeignKey(PublicProfileResource, 'owner', full=True)
+    course_type = fields.ForeignKey(CourseTypeResource, 'course_type', full=True)
+
+    class Meta:
+        queryset = Course.objects.all()
+        allowed_methods = ['get']
+        fields = ['course_name', 'course_type', 'course_desciption', 'owner', 'price']
+        authorization = Authorization()
+        resource_name = 'courses'
+
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/search%s$" % (self._meta.resource_name, trailing_slash()), 
+                self.wrap_view('get_search'), 
+                name="api_get_search"
+            ),
+        ]
+
+    def __make_Q_price_filter(self, low_price, up_price):
+        up_price = int(up_price)
+        price_filter = Q(price__gte=int(low_price))
+        
+        if up_price:
+            price_filter &= Q(price__lte=up_price)
+        return price_filter
+
+    def __make_Q_city_filter(self, city):
+        if city:
+            return Q(owner__city=city)
+        return Q()   
+    
+    def __make_Q_type_filter(self, type_id):
+        if type_id:
+            return Q(course_type__id=int(type_id))
+        return Q()
+
+    def _search(self, request):
+        print request.GET.get('course_type', '')
+        city_filter = self.__make_Q_city_filter(request.GET.get('city', ''))
+        price_filter = self.__make_Q_price_filter(
+                                                request.GET.get('low_price', ''), 
+                                                request.GET.get('up_price', ''))
+        type_filter = self.__make_Q_type_filter(request.GET.get('course_type', ''))
+        sqs = self._meta.queryset.filter(type_filter, price_filter, city_filter)
+        objects = []
+
+        for obj in sqs:
+            bundle = self.build_bundle(obj=obj, request=request)
+            objects.append(self.full_dehydrate(bundle))
+
+        return self.serialize(request, {'courses': objects}, 'application/json')
+
+    def get_search(self, request, **kwargs):
+        print 'get_search'
+        self.throttle_check(request)
+        self.method_check(request, allowed=['get'])
+        results = self._search(request)
+        self.log_throttled_access(request)
+        print 'end_search', results
+        raise ImmediateHttpResponse(response=HttpResponse(
+                                            content=json.dumps(results),
+                                            status=200
+                                        ))
+
+
+""" ***************** End Search ************************************************** """

@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<script type="text/template" id="templateDiv">
+    <div>
+        Subject: <%= course_name %> <br/>
+        Courses: <%= course_type.name %> <br/>
+        City: <%= owner.city %> <br/>
+        Price: <%= price %> <br/>
+        Discribe: <%= course_desciption %> <br/>
+    </div>
+</script>
+<script type="text/template" id="templateEmptyDiv">
+    <div> No results </div>
+</script>
+<script type="text/javascript">
+$(function(){
+    CourseTypeModel = Backbone.Model.extend({
+        urlRoot: '/api/v1/course_type/',
+    });
+
+    CourseTypeCollection = Backbone.Collection.extend({
+        model: CourseTypeModel,
+        url: '/api/v1/course_type/'
+    });
+
+    CourseTypeView = Backbone.View.extend({
+        el: "#course_type",
+        initialize: function() {
+            _.bindAll(this, 'render');
+            this.collection = new CourseTypeCollection();
+            var that = this;
+            this.collection.fetch({
+                success: function(course_types){
+                    that.render(course_types.toJSON())
+                }
+            });
+        },
+        template: _.template('<option value="<%= id %>"><%= name %></option>'),
+        render: function(course_types){
+            var that = this;
+            course_types.forEach(function(course_type){
+                that.$el.append(that.template(course_type));
+            });
+        }
+    });
+
+    SearchCourseModel = Backbone.Model.extend({
+        urlRoot: '/api/v1/courses/search/'
+    });
+
+    SearchCourseCollection = Backbone.Collection.extend({
+        
+        model: SearchCourseModel,
+
+        url : '/api/v1/courses/search/',
+    });
+
+    SearchView = Backbone.View.extend({
+        el: '#searchForm',
+        events: {
+            'click #search': 'searchData',
+            'change #course_type': 'searchData',
+            'change #low_price': 'searchData',
+            'change #up_price': 'searchData',
+            'change input#city': 'searchData'
+        },
+        initialize: function(){
+            _.bindAll(this, 'searchData', 'render');
+        },
+        searchData: function(){
+            var that = this;
+            var unindexed_array = this.$el.serializeArray();
+            var data = {};
+
+            unindexed_array.forEach(function(n){
+                data[n.name] = n.value;
+            });
+            alert(JSON.stringify(data));
+            $.ajax({
+                type: 'GET',
+                url: '/api/v1/courses/search/',
+                data: data,
+                success: function(data){
+                    var parsed = $.parseJSON($.parseJSON(data));
+
+                    console.log(parsed);
+                    alert(typeof parsed);
+                    that.render(parsed.courses);     
+                },
+            });
+            // var collection = new SearchCourseModel(data);
+            // collection.fetch({
+            //     success: function(courses){
+            //         // that.render(courses.toJSON())
+            //     }
+            // });
+        },
+        render: function(courses){
+            if ( courses.length > 0 ) {
+                var template = _.template( $("#templateDiv").html() );
+                courses.forEach(function(course){
+                    alert(JSON.stringify(course));
+                    $('#results').append(template(course));
+                });
+            } else {
+                var template = _.template( $("#templateEmptyDiv").html() );
+                $('#results').html( template );
+            }
+        }
+    });
+
+    return new CourseTypeView(), new SearchView();
+
+})
+</script>
+<h5>BooBaa</h5>
+<div id="booka"></div>
+<form id="searchForm">
+    <label>Course type: </label>
+    <select name="course_type" id="course_type">
+        <option value="">All</option>
+    </select><br/>
+    <label>Course price: </label><br/>
+    <label>from: </label>
+    <input name="low_price" type="text" id="low_price" value="0">
+    <label> - to: </label>
+    <input name="up_price" type="text" id="up_price" value="0"><br/>
+    <label>City: </label>
+    <input name="city" type="text" id="city" value=""><br/>
+    <input type="button" id="search" value="Search">
+</form>
+<div id="results"></div>
+{% endblock %}
