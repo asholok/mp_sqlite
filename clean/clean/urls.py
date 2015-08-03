@@ -13,10 +13,13 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf.urls import include, url
+from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from profiles import views
 from tastypie.api import Api
 from django.views.generic import TemplateView
+from django.conf.urls.i18n import i18n_patterns
+from django.utils.translation import activate
 from apis.profile_response import *
 
 v1_api = Api(api_name='v1')
@@ -29,10 +32,14 @@ v1_api.register(PublicCourseResource())
 v1_api.register(CourseTypeResource())
 v1_api.register(CourseSearchResource())
 
-urlpatterns = [
+urlpatterns = patterns('',)
+
+urlpatterns += i18n_patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(v1_api.urls)),
     url(r'^profile/', include('profiles.urls', namespace='profile')),
-    url(r'^search', TemplateView.as_view(template_name='search.html'), name='search'),
+    url(r'^search/', TemplateView.as_view(template_name='search.html'), name='search'),
+    url(r'^langs/$', views.change_language, name='lang'),
     url(r'^$', TemplateView.as_view(template_name='index.html'), name='home'),
-]
+
+)

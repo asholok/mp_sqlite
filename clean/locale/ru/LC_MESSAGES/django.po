@@ -1,0 +1,153 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-08-03 14:46+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: clean/settings.py:92
+msgid "English"
+msgstr "Английский"
+
+#: clean/settings.py:93
+msgid "Ukrainian"
+msgstr "Украинский"
+
+#: clean/settings.py:94
+msgid "Russian"
+msgstr "Росийский"
+
+#: src/tastypie/tastypie/authentication.py:437
+#, python-format
+msgid "Invalid access token: %s"
+msgstr ""
+
+#: src/tastypie/tastypie/authentication.py:451
+msgid "You are not allowed to access this resource."
+msgstr ""
+
+#: src/tastypie/tastypie/authentication.py:453
+msgid "Invalid request parameters."
+msgstr ""
+
+#: templates/base.html:16
+msgid "Logout"
+msgstr "Вьход"
+
+#: templates/base.html:17
+msgid "Create course"
+msgstr "Создать курс"
+
+#: templates/base.html:18
+msgid "Edit Profile"
+msgstr "Редактировать профиль"
+
+#: templates/base.html:28
+msgid "Registrate"
+msgstr "Регистрация"
+
+#: templates/base.html:30 templates/search.html:3 templates/search.html.py:135
+msgid "Search"
+msgstr "Поиск"
+
+#: templates/create_course.html:3
+msgid "Cource create"
+msgstr "Создать курс"
+
+#: templates/create_course.html:79
+msgid "course type: "
+msgstr "тип курса: "
+
+#: templates/create_course.html:83
+msgid "course desciption: "
+msgstr "описание курса: "
+
+#: templates/create_course.html:85
+msgid "course name: "
+msgstr "название курса: "
+
+#: templates/create_course.html:87
+msgid "course price: "
+msgstr "стоимость занятия: "
+
+#: templates/create_course.html:89
+msgid "Go"
+msgstr "Жги"
+
+#: templates/edit_course.html:3
+#, fuzzy
+#| msgid "Create course"
+msgid "Edit course"
+msgstr "Создать курс"
+
+#: templates/edit_course.html:8 templates/search.html:124
+msgid "Course type: "
+msgstr "Тип курсов: "
+
+#: templates/edit_course.html:10
+#, fuzzy
+#| msgid "course name: "
+msgid "Course name: "
+msgstr "название курса: "
+
+#: templates/edit_course.html:12
+#, fuzzy
+#| msgid "course desciption: "
+msgid "Course desciption: "
+msgstr "описание курса: "
+
+#: templates/edit_course.html:14
+#, fuzzy
+#| msgid "Price: "
+msgid "price: "
+msgstr "Цена: "
+
+#: templates/edit_course.html:16
+msgid "Change"
+msgstr ""
+
+#: templates/search.html:9
+msgid "Subject: "
+msgstr "Предмет: "
+
+#: templates/search.html:10
+msgid "Courses: "
+msgstr "Курсьі: "
+
+#: templates/search.html:11 templates/search.html.py:133
+msgid "City: "
+msgstr "Город: "
+
+#: templates/search.html:12
+msgid "Price: "
+msgstr "Цена: "
+
+#: templates/search.html:13
+msgid "Discribe: "
+msgstr "Описание: "
+
+#: templates/search.html:128
+msgid "Course price: "
+msgstr "Стоимость курсов: "
+
+#: templates/search.html:129
+msgid "from: "
+msgstr "от: "
+
+#: templates/search.html:131
+msgid "to: "
+msgstr "до: "

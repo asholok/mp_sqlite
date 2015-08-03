@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Cource create" %}{% endblock %}
 
 {% block content %}
 <script type="text/template" id="option_template">
@@ -75,16 +76,16 @@ $(function(){
 <h5>Vaaavaaa</h5>
 <form id="courseForm">
     {% csrf_token %}
-    <label>course type: </label>
+    <label>{% trans "course type: "%}</label>
     <select name="course_type" id="course_type">
         
     </select><br/>
-    <label>course desciption: </label>
+    <label>{% trans "course desciption: "%}</label>
     <input name="course_desciption" type="text" id="course_desciption" value=""><br/>
-    <label>course name: </label>
+    <label>{% trans "course name: "%}</label>
     <input name="course_name" type="text" id="course_name" value=""><br/>
-    <label>course price: </label>
+    <label>{% trans "course price: "%}</label>
     <input name="price" type="text" id="price" value=""><br/>
-    <input type="submit" id="create" value="Go">
+    <input type="submit" id="create" value={% trans "Go" %}>
 </form>
 {% endblock %}

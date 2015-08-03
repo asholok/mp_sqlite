@@ -1,5 +1,5 @@
 {% load staticfiles %}
-
+{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,12 +10,25 @@
     <script type="text/javascript" src="{% static 'js/backbone-tastypie.js' %}"></script>
 </head>
 <body>
+    <script type="text/javascript">
+        function changeLang() {
+            var lang = $('#languages').val();
+            alert(lang);
+            window.location.href = "{% url 'lang' %}?language="+lang;
+            // $.ajax({
+            //     type: 'GET',
+            //     url: "{% url 'lang' %}",
+            //     data:  {"language": lang},
+            // });
+        }
+
+    </script>
     {% if request.user.is_active %} 
         <div> in {{request.user.username}} </div>
         <div> id {{request.user.id}} </div>
-        <a href="{% url 'profile:logout' %}">Logout</a>
-        <a href="{% url 'profile:create_course' %}">Create course</a>
-        <a href="{% url 'profile:edit_profile' %}">Edit Profile</a>
+        <a href="{% url 'profile:logout' %}">{% trans "Logout" %}</a>
+        <a href="{% url 'profile:create_course' %}">{% trans "Create course" %}</a>
+        <a href="{% url 'profile:edit_profile' %}">{% trans "Edit Profile" %}</a>
     {% else %}
         <form action="{% url 'profile:login' %}" method="POST">
             {% csrf_token %}
@@ -25,9 +38,18 @@
             <input name="password" type="password" id="password" value="">
             <input type="submit" value="Go">
         </form>
-        <a href="{% url 'profile:create_profile' %}">Registrate</a>
+        <a href="{% url 'profile:create_profile' %}">{% trans "Registrate" %}</a>
     {% endif %}
-    <a href="{% url 'search' %}">Search</a>
+    <a href="{% url 'search' %}">{% trans "Search" %}</a>
+    <div>
+        <label>{% trans "Language" %}</label>
+        <select onchange="changeLang()" id="languages">
+            <option value=""></option>
+            <option value="en">EN</option>
+            <option value="ua">UA</option>
+            <option value="ru">RU</option>
+        </select><br/>
+    </div>
     {% block content %}{% endblock %}
 </body>
 </html>

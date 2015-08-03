@@ -1,15 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Search"%}{% endblock %}
 
 {% block content %}
 <script type="text/template" id="templateDiv">
     <% _.forEach(courses, function(course){ %>
         <div>
-            Subject: <%= course.course_name %> <br/>
-            Courses: <%= course.course_type.name %> <br/>
-            City: <%= course.owner.city %> <br/>
-            Price: <%= course.price %> <br/>
-            Discribe: <%= course.course_desciption %> <br/>
+            {% trans "Subject: "%}<%= course.course_name %> <br/>
+            {% trans "Courses: "%}<%= course.course_type.name %> <br/>
+            {% trans "City: "%}<%= course.owner.city %> <br/>
+            {% trans "Price: "%}<%= course.price %> <br/>
+            {% trans "Discribe: "%}<%= course.course_desciption %> <br/>
         </div>
     <% }); %>
 </script>
@@ -120,18 +121,18 @@ $(function(){
 <h5>BooBaa</h5>
 <div id="booka"></div>
 <form id="searchForm">
-    <label>Course type: </label>
+    <label>{% trans "Course type: "%}</label>
     <select name="course_type" id="course_type">
         <option value="">All</option>
     </select><br/>
-    <label>Course price: </label><br/>
-    <label>from: </label>
+    <label>{% trans "Course price: "%}</label><br/>
+    <label>{% trans "from: "%}</label>
     <input name="low_price" type="text" id="low_price" value="0">
-    <label> - to: </label>
+    <label> - {% trans "to: "%}</label>
     <input name="up_price" type="text" id="up_price" value="0"><br/>
-    <label>City: </label>
+    <label>{% trans "City: "%}</label>
     <input name="city" type="text" id="city" value=""><br/>
-    <input type="button" id="search" value="Search">
+    <input type="button" id="search" value={% trans "Search"%}>
 </form>
 <div id="results"></div>
 {% endblock %}
