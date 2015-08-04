@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, logout, login
 from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView
 from django.utils import translation
+from django.core.urlresolvers import reverse
 
 def login_user(request):
     logout(request)
@@ -27,8 +28,8 @@ def change_language(request):
             translation.activate(lang)
             print translation.get_language()
             request.LANGUAGE_CODE = translation.get_language()
-            # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-            return render(request, 'index.html')
+            return HttpResponseRedirect(reverse('home'))
+            
     
     return HttpResponseRedirect('/')
 

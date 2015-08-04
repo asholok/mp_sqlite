@@ -44,7 +44,7 @@
     <div>
         <label>{% trans "Language" %}</label>
         <select onchange="changeLang()" id="languages">
-            <option value=""></option>
+            <option value="">{{request.LANGUAGE_CODE}}</option>
             <option value="en">EN</option>
             <option value="ua">UA</option>
             <option value="ru">RU</option>
